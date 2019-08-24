@@ -22,6 +22,7 @@ repositories {
 dependencies {
     // ...
     implementation 'com.github.libly:hydride-android:0.1.1' // Add this line
+    
 }
 ```
 
@@ -38,7 +39,9 @@ To get started simple initialise an `Hydrogen` object and use its methods. Here'
 
 ```java
 // Initialise
+Native.register(Hydrogen.class, "hydrogen");
 Hydrogen hydrogen = new Hydrogen();
+hydrogen.hydro_init();
 
 // Make a key
 byte[] key = new byte[Hydrogen.HYDRO_SIGN_SECRETKEYBYTES];
