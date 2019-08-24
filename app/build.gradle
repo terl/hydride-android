@@ -13,8 +13,8 @@ plugins {
 
 ext {
     artifactId = "hydride-android"
-    groupId = "co.libly"
-    version = '0.1.0'
+    groupId = "com.github.libly"
+    version = '0.1.1'
     description = "Hydride binds against Libhydrogen to provide " +
             "simple cryptography that is compatible with API 16 and above of Android."
 }
@@ -30,7 +30,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
-        versionName "0.1.0"
+        versionName project.ext.version
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
