@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) Libly - Terl Tech Ltd  • 24/08/2019, 01:35 • libly.co, goterl.com
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v2.0. If a copy of the MPL was not distributed with this
+ * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+plugins {
+    id 'com.android.library'
+    id "com.github.dcendents.android-maven" version "2.1"
+}
+
+ext {
+    artifactId = "hydride-android"
+    groupId = "co.libly"
+    version = '0.1.0'
+    description = "Hydride binds against Libhydrogen to provide " +
+            "simple cryptography that is compatible with API 16 and above of Android."
+}
+
+group project.ext.groupId
+version = project.ext.version
+
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.1"
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode 1
+        versionName "0.1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    implementation 'net.java.dev.jna:jna:5.4.0@aar'
+}
