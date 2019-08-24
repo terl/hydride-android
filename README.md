@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     // ...
-    implementation 'com.github.libly:hydride-java:1.1.1' // Add this line
+    implementation 'com.github.libly:hydride-android:0.1.1' // Add this line
 }
 ```
 
