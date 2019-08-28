@@ -63,3 +63,6 @@ int encryptSuccess = hydrogen.hydro_secretbox_encrypt(cipher, messageBytes, mess
 For more information on how to use please refer to the [Libhydrogen wiki](https://github.com/jedisct1/libhydrogen/wiki) where 
 you can find a full list of all available operations. Just use `hydrogen.your_operation_name()` to use them.
 
+
+## Hydride (Java)
+If you are looking for the Java variant of Hydride then look no further, [click here to access Hydride for Java](https://github.com/libly/hydride-java).
