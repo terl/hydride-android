@@ -9,12 +9,15 @@
 plugins {
     id 'com.android.library'
     id "com.github.dcendents.android-maven" version "2.1"
+    id 'maven-publish'
+    id 'signing'
+    id "com.jfrog.bintray" version "1.8.4"
 }
 
 ext {
     artifactId = "hydride-android"
-    groupId = "com.github.libly"
-    version = '0.1.1'
+    groupId = "co.libly"
+    version = '0.1.2'
     description = "Hydride binds against Libhydrogen to provide " +
             "simple cryptography that is compatible with API 16 and above of Android."
 }
@@ -45,4 +48,119 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
     implementation 'net.java.dev.jna:jna:5.4.0@aar'
+}
+
+
+// Tasks
+signing {
+    // This will use the GPG Agent
+    // to sign the jar
+    useGpgCmd()
+    sign configurations.archives
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+
+task signPom(type: Sign) {
+    sign project.file("$buildDir/publications/mavenJava/pom-default.xml")
+
+    // The signing plugin does not seem to notice
+    // it when the publications folder with the
+    // signature has been deleted. So we always
+    // create a new signature
+    outputs.upToDateWhen { false }
+}
+
+artifacts {
+    archives sourcesJar, javadocJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.ext.groupId
+            artifactId project.ext.artifactId
+            version project.ext.version
+
+            artifact "$buildDir/outputs/aar/$artifactId-release.aar"
+            artifact sourcesJar
+            artifact javadocJar
+
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', project.ext.description)
+                root.appendNode('name', project.ext.artifactId)
+                root.appendNode('url', 'https://github.com/libly/hydride-android')
+
+                def scm = root.appendNode('scm')
+                scm.appendNode("connection", "scm:git:git://github.com/libly/hydride-android.git")
+                scm.appendNode("developerConnection", "scm:git:ssh://github.com/libly/hydride-android")
+                scm.appendNode("url", "http://github.com/libly/hydride-android")
+
+                def license = root.appendNode('licenses').appendNode('license')
+                license.appendNode('name', 'Mozilla Public License, Version 2.0')
+                license.appendNode('url', 'http://www.mozilla.org/MPL/2.0/index.txt')
+                license.appendNode('distribution', 'repo')
+
+                def developer = root.appendNode('developers').appendNode('developer')
+                developer.appendNode('name', 'Libly')
+                developer.appendNode('email', 'hello@libly.co')
+
+                def dependenciesNode = root.appendNode('dependencies')
+                configurations.implementation.allDependencies.each {
+                    if (it.group != null && (it.name != null || "unspecified".equals(it.name)) && it.version != null) {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+bintray {
+    user = findProperty("bintray.user")
+    key = findProperty("bintray.apiKey")
+    publications = ['mavenJava']
+    publish = true
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = project.ext.artifactId
+        userOrg = 'libly'
+        desc = project.ext.description
+        licenses = ['MPL-2.0']
+        issueTrackerUrl = "https://github.com/libly/hydride-android/issues"
+        vcsUrl = 'https://github.com/libly/hydride-android.git'
+
+        version {
+            name = project.ext.version
+            released = new java.util.Date()
+            vcsTag = project.ext.version
+        }
+    }
+}
+
+
+model {
+    tasks.publishMavenJavaPublicationToMavenLocal {
+        dependsOn project.tasks.withType(Sign)
+    }
 }
