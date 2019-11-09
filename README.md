@@ -16,14 +16,15 @@ Hydride is only available via Jitpack at the moment. Maven and SBT installation 
 ```groovy
 // Top-level build.gradle
 repositories {
-    // ...
-    maven { url 'https://jitpack.io' } // Add this line
+    mavenCentral()
+    maven {
+        url  "https://dl.bintray.com/libly/maven"
+    }
 }
 
 dependencies {
     // ...
-    implementation 'com.github.libly:hydride-android:0.1.1' // Add this line
-    
+    implementation 'co.libly:hydride-android:0.1.3@aar' // Add this line
 }
 ```
 
