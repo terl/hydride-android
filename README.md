@@ -52,11 +52,11 @@ byte[] key = new byte[Hydrogen.HYDRO_SIGN_SECRETKEYBYTES];
 hydrogen.hydro_secretbox_keygen(key);
 
 // Make a cipher array to hold the resulting encrypted text
+String message = "This is a message that will be encrypted.";
+byte[] messageBytes = message.getBytes();
 byte[] cipher = new byte[Hydrogen.HYDRO_SECRETBOX_HEADERBYTES + messageBytes.length];
 String context = "context1";
 byte[] contextBytes = context.getBytes();
-String message = "This is a message that will be encrypted.";
-byte[] messageBytes = message.getBytes();
 long messageId = 1L;
 
 // Now encrypt
